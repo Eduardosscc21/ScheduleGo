@@ -1,0 +1,1618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>781</width>
+    <height>581</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">backgroaund:rgb(0, 0, 0)</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_9">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QFrame" name="frame">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(0, 0, 0);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,8">
+       <item>
+        <widget class="QFrame" name="frame_S">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>42</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+background-color:rgb(0,0,0);
+}
+
+QPushButton{
+background-color:#000000ff;
+border-radius: 20px;
+}
+
+QPushButton::hover{
+background-color:rgb(61,61,61);
+border-radius: 20px;
+}</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="pushButton_menu">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../../../../../../root/.designer/crear_horarios/barra.png</normaloff>../../../../../../../../../root/.designer/crear_horarios/barra.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>38</width>
+              <height>28</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>189</width>
+              <height>19</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_minimizar">
+            <property name="minimumSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../../../../../../root/.designer/crear_horarios/minimizar.png</normaloff>../../../../../../../../../root/.designer/crear_horarios/minimizar.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_ampliar">
+            <property name="minimumSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../../../../../../root/.designer/crear_horarios/ampliar.png</normaloff>../../../../../../../../../root/.designer/crear_horarios/ampliar.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_cerrar">
+            <property name="minimumSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../../../../../../root/.designer/crear_horarios/cerrar.png</normaloff>../../../../../../../../../root/.designer/crear_horarios/cerrar.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>38</width>
+              <height>38</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame_contenido">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+          <item>
+           <widget class="QFrame" name="frame_control">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QFrame{
+background-color:rgb(0,206,151);
+}
+
+QPushButton{
+background-color:rgb(61,61,61);
+border-top-left-radius:20px;
+border-bottom-left-radius:20px;
+color:rgb(255,255,255);
+font: 77 10pt&quot;Arial Black&quot;;
+}
+
+QPushButton::hover{
+background-color:white;
+border-top-left-radius:20px;
+border-bottom-left-radius:20px;
+color:rgb(0,0,0);
+font: 77 10pt&quot;Arial Black&quot;;
+}</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QPushButton" name="pushButton_datos">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Base de datos</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="bt_cargar">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Cargar archivos</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_actualizar">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Actualizar</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_eliminar">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Eliminar</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="bt_choque_materias">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Choque materias</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_crear_horarios">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Crear horarios</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_paginas">
+            <property name="styleSheet">
+             <string notr="true">QFrame{
+backgroud-color:rgb(61,61,61);
+}
+
+QLabel{
+font:87 12pt&quot;Arial Black&quot;;
+background-color:#000000ff;
+color:rgb(0,206,151);
+border:0px solid #14C8DC;
+}
+
+QLineEdit{
+border:0px;
+color:rgb(255,255,255);
+border-bottom:2px solid rgb(61,61,61);
+font: 75 12pt&quot;Times New Roman&quot;;
+}
+
+QPushButton{
+backgroud-color:rgb(61,61,61);
+border-radius:15px;
+color:rgb(255,255,255);
+font: 77 10pt&quot;Arial Black&quot;;
+}
+
+QPushButton:hover{
+backgroud-color:rgb(0,206,151);
+border-radius:15px;
+color:rgb(0,0,0);
+font: 77 10pt&quot;Arial Black&quot;;
+}
+
+QTableWidget{
+background-color:rgb(255,255,255);
+color:rgb(0,0,0);
+gridline-color:rgb(0,206,151);
+font-size: 12pt;
+color:#000000;
+}
+
+QHeaderView::section{
+background-color:rgb(0,206,151);
+border:1px solid rgb(0,0,0);
+font-size:12pt;
+}
+
+QTableWidget QTableCornerButton::section{
+background-color:rgb(0,0,0);
+border:1px solid rgb(0,206,151);
+}</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>1</number>
+             </property>
+             <property name="topMargin">
+              <number>1</number>
+             </property>
+             <property name="rightMargin">
+              <number>1</number>
+             </property>
+             <property name="bottomMargin">
+              <number>1</number>
+             </property>
+             <item>
+              <widget class="QStackedWidget" name="stackedWidget">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <widget class="QWidget" name="page_cargar">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <layout class="QGridLayout" name="gridLayout_3">
+                   <item row="0" column="0">
+                    <spacer name="verticalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="0">
+                    <layout class="QGridLayout" name="gridLayout_2">
+                     <item row="0" column="0">
+                      <spacer name="horizontalSpacer_9">
+                       <property name="orientation">
+                        <enum>Qt::Orientation::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="0" column="1">
+                      <layout class="QGridLayout" name="gridLayout">
+                       <item row="0" column="0">
+                        <widget class="QPushButton" name="signal_carga_csv">
+                         <property name="text">
+                          <string>Cargar csv</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QProgressBar" name="progressBar">
+                         <property name="value">
+                          <number>24</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="0" column="2">
+                      <spacer name="horizontalSpacer_8">
+                       <property name="orientation">
+                        <enum>Qt::Orientation::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="1" column="1">
+                      <spacer name="verticalSpacer_8">
+                       <property name="orientation">
+                        <enum>Qt::Orientation::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_eliminar">
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <item>
+                  <widget class="QLabel" name="label_14">
+                   <property name="text">
+                    <string>Eliminar materia</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_9">
+                   <item>
+                    <widget class="QLabel" name="label_nrc_eliminar">
+                     <property name="text">
+                      <string>Nrc</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="materia_eliminar"/>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="bt_buscar_eliminar">
+                     <property name="minimumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Buscar</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QTableWidget" name="tabla_borrar">
+                   <column>
+                    <property name="text">
+                     <string>Nrc</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Clave</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Materia</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Sec</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>CR</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Cup</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Dis</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>S/H/D/E</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Ses/Profesor</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <item>
+                    <widget class="QLabel" name="label_16">
+                     <property name="minimumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="signal_eliminar">
+                     <property name="text">
+                      <string>Eliminar</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_actualizar">
+                <layout class="QVBoxLayout" name="verticalLayout_12">
+                 <item>
+                  <widget class="QLabel" name="label_13">
+                   <property name="text">
+                    <string>Actualizar</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_8">
+                   <item>
+                    <widget class="QLabel" name="label_12">
+                     <property name="text">
+                      <string>NRC de la materia</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="act_buscar"/>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="bt_buscar_actializar">
+                     <property name="minimumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Buscar</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_6">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_6">
+                       <item>
+                        <widget class="QLabel" name="label_9">
+                         <property name="text">
+                          <string>Nrc</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_11">
+                         <property name="text">
+                          <string>Clave</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_8">
+                         <property name="text">
+                          <string>Materia</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_6">
+                         <property name="text">
+                          <string>Sec</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_7">
+                         <property name="text">
+                          <string>Cr</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_5">
+                         <property name="text">
+                          <string>Cup</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_4">
+                         <property name="text">
+                          <string>Dis</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_3">
+                         <property name="text">
+                          <string>S/H/D/E/A</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_2">
+                         <property name="text">
+                          <string>Sec/Profesor</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_11">
+                     <item>
+                      <widget class="QLineEdit" name="act_nrc_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_clave_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_materia_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_sec_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_cr_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_cup_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_dis_2"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_hora"/>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="act_profesor_2"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_4">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <item>
+                    <widget class="QLabel" name="label_10">
+                     <property name="minimumSize">
+                      <size>
+                       <width>129</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="signal_actualizar">
+                     <property name="minimumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Actualizar</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_choque_materias">
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_12">
+                   <item>
+                    <widget class="QLabel" name="nrc_choque_materias">
+                     <property name="text">
+                      <string>Nrc</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="materia_choque"/>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="signal_choque_materias">
+                     <property name="minimumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Buscar</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QTableWidget" name="tabla_materias_chocando">
+                   <column>
+                    <property name="text">
+                     <string>Nrc</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Clave</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Materia</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Sec</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>CR</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Cup</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Dis</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>S/H/D/E</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Ses/Profesor</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_crea_horarios">
+                <layout class="QGridLayout" name="gridLayout_8">
+                 <item row="0" column="0">
+                  <layout class="QGridLayout" name="gridLayout_6">
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_18">
+                     <property name="text">
+                      <string>Materia 3</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_17">
+                     <property name="text">
+                      <string>Materia 2</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QLineEdit" name="materia5">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3" rowspan="2">
+                    <widget class="QLineEdit" name="materia6">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="2">
+                    <widget class="QLabel" name="label_24">
+                     <property name="text">
+                      <string>Ciclo</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="3">
+                    <widget class="QLineEdit" name="materia7">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QLineEdit" name="materia3"/>
+                   </item>
+                   <item row="0" column="1" rowspan="2">
+                    <widget class="QLineEdit" name="materia1">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="materia2"/>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="label_19">
+                     <property name="text">
+                      <string>Materia 4</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QLineEdit" name="materia4"/>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QLabel" name="label_20">
+                     <property name="text">
+                      <string>Materia 5</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2" rowspan="2">
+                    <widget class="QLabel" name="label_21">
+                     <property name="text">
+                      <string>Materia 6</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_15">
+                     <property name="text">
+                      <string>Materia 1</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="2">
+                    <widget class="QLabel" name="label_22">
+                     <property name="text">
+                      <string>Materia 7</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="3">
+                    <widget class="QLineEdit" name="linea_ciclo">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <layout class="QGridLayout" name="gridLayout_7">
+                   <item row="0" column="3">
+                    <spacer name="horizontalSpacer_5">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QPushButton" name="signal_crear_horario">
+                     <property name="text">
+                      <string>Crear horario</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <spacer name="horizontalSpacer_6">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QGroupBox" name="groupBox">
+                   <property name="title">
+                    <string>Horarios</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_10">
+                    <item row="0" column="0">
+                     <widget class="QTableWidget" name="horario1">
+                      <row>
+                       <property name="text">
+                        <string>0700-0855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>0900-1055</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1100-1255</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1300-1455</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1500-1655</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1700-1855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1900-2055</string>
+                       </property>
+                      </row>
+                      <column>
+                       <property name="text">
+                        <string>Lunes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Martes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Miercoles</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Jueves</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Viernes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Sabado</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QTableWidget" name="horario2">
+                      <row>
+                       <property name="text">
+                        <string>0700-0855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>0900-1055</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1100-1255</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1300-1455</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1500-1655</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1700-1855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1900-2055</string>
+                       </property>
+                      </row>
+                      <column>
+                       <property name="text">
+                        <string>Lunes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Martes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Miercoles</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Jueves</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Viernes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Sabado</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <widget class="QTableWidget" name="horario3">
+                      <row>
+                       <property name="text">
+                        <string>0700-0855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>0900-1055</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1100-1255</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1300-1455</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1500-1655</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1700-1855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1900-2055</string>
+                       </property>
+                      </row>
+                      <column>
+                       <property name="text">
+                        <string>Lunes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Martes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Miercoles</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Jueves</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Viernes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Sabado</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QTableWidget" name="horario4">
+                      <row>
+                       <property name="text">
+                        <string>0700-0855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>0900-1055</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1100-1255</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1300-1455</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1500-1655</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1700-1855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1900-2055</string>
+                       </property>
+                      </row>
+                      <column>
+                       <property name="text">
+                        <string>Lunes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Martes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Miercoles</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Jueves</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Viernes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Sabado</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QTableWidget" name="horario5">
+                      <row>
+                       <property name="text">
+                        <string>0700-0855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>0900-1055</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1100-1255</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1300-1455</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1500-1655</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1700-1855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1900-2055</string>
+                       </property>
+                      </row>
+                      <column>
+                       <property name="text">
+                        <string>Lunes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Martes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Miercoles</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Jueves</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Viernes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Sabado</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QTableWidget" name="horario6">
+                      <row>
+                       <property name="text">
+                        <string>0700-0855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>0900-1055</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1100-1255</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1300-1455</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1500-1655</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1700-1855</string>
+                       </property>
+                      </row>
+                      <row>
+                       <property name="text">
+                        <string>1900-2055</string>
+                       </property>
+                      </row>
+                      <column>
+                       <property name="text">
+                        <string>Lunes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Martes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Miercoles</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Jueves</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Viernes</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Sabado</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item row="2" column="2">
+                     <widget class="QPushButton" name="bt_descargar_csv">
+                      <property name="text">
+                       <string>Descargar horarios</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_datos">
+                <layout class="QVBoxLayout" name="verticalLayout_5">
+                 <item>
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Materias</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTableWidget" name="Tabla_materias">
+                   <column>
+                    <property name="text">
+                     <string>NRC</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Clave</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Materia</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Sec</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>CR</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Cup</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Disp</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Ses/Hora/Dias/Edif/Aula/Periodo</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Ses/Profesor</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <spacer name="horizontalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Orientation::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>188</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="bt_refrescar">
+                     <property name="minimumSize">
+                      <size>
+                       <width>120</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Refrescar</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

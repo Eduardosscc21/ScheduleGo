@@ -548,28 +548,38 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.page_actualizar)
         self.page_choque_materias = QWidget()
         self.page_choque_materias.setObjectName(u"page_choque_materias")
-        self.gridLayout_5 = QGridLayout(self.page_choque_materias)
+        self.gridLayout_11 = QGridLayout(self.page_choque_materias)
+        self.gridLayout_11.setObjectName(u"gridLayout_11")
+        self.gridLayout_5 = QGridLayout()
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.horizontalLayout_12 = QHBoxLayout()
-        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.nrc_choque_materias = QLabel(self.page_choque_materias)
         self.nrc_choque_materias.setObjectName(u"nrc_choque_materias")
 
-        self.horizontalLayout_12.addWidget(self.nrc_choque_materias)
+        self.gridLayout_5.addWidget(self.nrc_choque_materias, 0, 0, 1, 1)
 
         self.materia_choque = QLineEdit(self.page_choque_materias)
         self.materia_choque.setObjectName(u"materia_choque")
 
-        self.horizontalLayout_12.addWidget(self.materia_choque)
+        self.gridLayout_5.addWidget(self.materia_choque, 0, 1, 1, 1)
+
+        self.nrc_choque_materias_2 = QLabel(self.page_choque_materias)
+        self.nrc_choque_materias_2.setObjectName(u"nrc_choque_materias_2")
+
+        self.gridLayout_5.addWidget(self.nrc_choque_materias_2, 0, 2, 1, 1)
+
+        self.materia_choque_2 = QLineEdit(self.page_choque_materias)
+        self.materia_choque_2.setObjectName(u"materia_choque_2")
+
+        self.gridLayout_5.addWidget(self.materia_choque_2, 0, 3, 1, 1)
 
         self.signal_choque_materias = QPushButton(self.page_choque_materias)
         self.signal_choque_materias.setObjectName(u"signal_choque_materias")
         self.signal_choque_materias.setMinimumSize(QSize(120, 30))
 
-        self.horizontalLayout_12.addWidget(self.signal_choque_materias)
+        self.gridLayout_5.addWidget(self.signal_choque_materias, 0, 4, 1, 1)
 
 
-        self.gridLayout_5.addLayout(self.horizontalLayout_12, 0, 0, 1, 1)
+        self.gridLayout_11.addLayout(self.gridLayout_5, 0, 0, 1, 1)
 
         self.tabla_materias_chocando = QTableWidget(self.page_choque_materias)
         if (self.tabla_materias_chocando.columnCount() < 9):
@@ -594,7 +604,7 @@ class Ui_MainWindow(object):
         self.tabla_materias_chocando.setHorizontalHeaderItem(8, __qtablewidgetitem17)
         self.tabla_materias_chocando.setObjectName(u"tabla_materias_chocando")
 
-        self.gridLayout_5.addWidget(self.tabla_materias_chocando, 1, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.tabla_materias_chocando, 1, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.page_choque_materias)
         self.page_crea_horarios = QWidget()
@@ -1051,6 +1061,7 @@ class Ui_MainWindow(object):
         self.label_10.setText("")
         self.signal_actualizar.setText(QCoreApplication.translate("MainWindow", u"Actualizar", None))
         self.nrc_choque_materias.setText(QCoreApplication.translate("MainWindow", u"Nrc", None))
+        self.nrc_choque_materias_2.setText(QCoreApplication.translate("MainWindow", u"ciclo", None))
         self.signal_choque_materias.setText(QCoreApplication.translate("MainWindow", u"Buscar", None))
         ___qtablewidgetitem9 = self.tabla_materias_chocando.horizontalHeaderItem(0)
         ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Nrc", None));

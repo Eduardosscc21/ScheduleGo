@@ -306,38 +306,70 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def choque_materias(self):
-        nrc = self.ui.materia_choque.text().upper()
+        nrc = self.ui.materia_choque.text().upper().strip()
+        ciclo_buscado = self.ui.materia_choque_2.text().replace(" ", "")
         materia_base = self.base_datos.buscar_materia(nrc)
-        
         if len(materia_base) == 0:
-            self.ui.signal_choque_materias.setText("NRC no encontrado")
-            return 
-
-        dias_base, hora_base = self.limpiar_hora_dia(materia_base[0][7])
+            self.ui.signal_choque_materias-setText("NRC no encontrado")
+            return
+        
+        materia_base = materia_base[0]
+        dias_base, hora_base = self.limpiar_hora_dia(materia_base[7])
+        #obtner ciclo base
+        ciclo_base = self.extraer_ciclo(materia_base[7])
+        # si el usuario lo hixo manual
+        if ciclo_buscado != "":
+            ciclo_base = ciclo_buscado
+        
+        # obtner materias
         todas = self.base_datos.obtener_datos()
         coincidencias = []
 
         for materia in todas:
-            if str(materia[0]).strip().upper() == nrc:
-                continue
-
-            dias_actual, hora_actual = self.limpiar_hora_dia(materia[7])
-
-            if self.mismo_dia(dias_base, dias_actual) and self.hay_traslape(hora_base, hora_actual):
+            try:
+                #evitar compararse consigo mismo
+                if str(materia[0]).upper().strip() == nrc:
+                    continue
+                # limpiar hora actual
+                dias_actual, hora_actual = self.limpiar_hora_dia(materia[7])
+                #obtner ciclo actual
+                ciclo_actual = self.extraer_ciclo(materia[7])
+                # validar ciclo
+                if ciclo_base != "":
+                    if ciclo_actual != ciclo_base:
+                        continue
+                #validar dias
+                if not self.mismo_dia(dias_base, dias_actual):
+                    continue
+                #validar traslape
+                if not self.hay_traslape(hora_base, hora_actual):
+                    continue
                 coincidencias.append(materia)
-
+            except Exception as e:
+                print("Error en materia:", e)
+        # resultados
+        self.ui.tabla_materias_chocando.clearContents()
         self.ui.tabla_materias_chocando.setRowCount(len(coincidencias))
-
-        for fila, row  in enumerate(coincidencias):
+        for fila, row in enumerate(coincidencias):
             for columna, valor in enumerate(row):
+                item = QtWidgets.QTableWidgetItem(str(valor))
                 self.ui.tabla_materias_chocando.setItem(
                     fila,
                     columna,
-                    QtWidgets.QTableWidgetItem(str(valor))
+                    item
                 )
         self.ui.signal_choque_materias.setText(
-            f"{len(coincidencias)} choques encontrados"
+            f"{len(coincidencias)} choque encontrados"
         )
+
+        
+
+
+
+
+
+            
+        
 ############### elementos crear horarios 
     def extraer_ciclo(self, texto):
         texto = str(texto)
@@ -487,11 +519,16 @@ class MainWindow(QMainWindow):
         ]
         for i, tabla in enumerate(tablas):
             tabla.clearContents()
+            # ajuste automatico
+            tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             if i >= len(horarios_validos):
                 continue
             horario = horarios_validos[i]
             for materia in horario:
-                nombre = str(materia[2])
+                nrc = str(materia[0]).strip()
+                nombre = str(materia[2]).strip()
+
+                texto = f"{nrc}-{nombre}"
                 dias, hora = self.limpiar_hora_dia(materia[7])
 
                 fila = self.obtener_fila_hora(hora, tabla)
@@ -499,7 +536,11 @@ class MainWindow(QMainWindow):
 
                 if fila is not None:
                     for col in columnas:
-                        tabla.setItem(fila, col, QTableWidgetItem(nombre))
+                        item = QTableWidgetItem(texto)
+                        # para ver comple
+                        item.setToolTip(texto)
+                        tabla.setItem(fila,col,item)
+                        
 
 
 

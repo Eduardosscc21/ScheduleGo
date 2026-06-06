@@ -852,20 +852,30 @@ border:1px solid rgb(0,206,151);
                 </layout>
                </widget>
                <widget class="QWidget" name="page_choque_materias">
-                <layout class="QGridLayout" name="gridLayout_5">
+                <layout class="QGridLayout" name="gridLayout_11">
                  <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_12">
-                   <item>
+                  <layout class="QGridLayout" name="gridLayout_5">
+                   <item row="0" column="0">
                     <widget class="QLabel" name="nrc_choque_materias">
                      <property name="text">
                       <string>Nrc</string>
                      </property>
                     </widget>
                    </item>
-                   <item>
+                   <item row="0" column="1">
                     <widget class="QLineEdit" name="materia_choque"/>
                    </item>
-                   <item>
+                   <item row="0" column="2">
+                    <widget class="QLabel" name="nrc_choque_materias_2">
+                     <property name="text">
+                      <string>ciclo</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QLineEdit" name="materia_choque_2"/>
+                   </item>
+                   <item row="0" column="4">
                     <widget class="QPushButton" name="signal_choque_materias">
                      <property name="minimumSize">
                       <size>

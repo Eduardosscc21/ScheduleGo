@@ -3,6 +3,7 @@ from PySide6.QtCore import Slot, QPropertyAnimation,QEasingCurve,Qt
 from PySide6 import QtCore, QtWidgets
 from mainwindow_ui import Ui_MainWindow
 from conexionsql_ventanacargar import Comunicacion
+from cre_horarios import HorarioGenetico
 #from PySide6.QtUiTools import QUiLoader
 import sys
 import re 
@@ -445,6 +446,7 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def crear_horario(self):
+        
         datos = self.base_datos.obtener_datos()
         ###input de mayerias
         materias_usuario = [
@@ -502,12 +504,25 @@ class MainWindow(QMainWindow):
                 key=self.obtener_inicio
             )[:5]
         
-        horarios_validos = self.generar_horarios(
+        '''horarios_validos = self.generar_horarios(
             materias_dict,
             materias_ordenadas,
             MAX_HORARIOS        
             )
-        
+        '''
+        for k in materias_dict:
+            materias_dict[k] = sorted(
+                materias_dict[k],
+                key=self.obtener_inicio
+            )[:5]
+        gen = HorarioGenetico(
+            materias_dict,
+            self,
+            poblacion=200,
+            generaciones=200,
+            mutacion=0.15
+        )
+        horarios_validos = gen.ejecutar()
         #mostrar tablas
         tablas = [
             self.ui.horario1,
@@ -541,7 +556,6 @@ class MainWindow(QMainWindow):
                         item.setToolTip(texto)
                         tabla.setItem(fila,col,item)
                         
-
 
 
 

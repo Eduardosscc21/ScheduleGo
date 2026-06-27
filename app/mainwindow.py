@@ -460,8 +460,8 @@ class MainWindow(QMainWindow):
         ]
 
         materias_usuario = [m for m in materias_usuario if m]
-        if len(materias_usuario) < 2:
-            self.ui.signal_crear_horario.setText("ingresa materias")
+        if len(materias_usuario) < 4:
+            self.ui.signal_crear_horario.setText("ingresa minimo 4 materias")
             return
         ciclo_usurio = self.ui.linea_ciclo.text().replace(" ","")
         #### filtrar datos
@@ -488,7 +488,7 @@ class MainWindow(QMainWindow):
         #elimina vacios
         materias_dict = {k: v for k,v in materias_dict.items() if v}
 
-        if len(materias_dict) < 2:
+        if len(materias_dict) <= 5 and len(materias_dict) >= 7:
             self.ui.signal_crear_horario.setText("faltan materias en bd")
             return
 
@@ -514,7 +514,7 @@ class MainWindow(QMainWindow):
             materias_dict[k] = sorted(
                 materias_dict[k],
                 key=self.obtener_inicio
-            )[:5]
+            )
         gen = HorarioGenetico(
             materias_dict,
             self,

@@ -9,12 +9,25 @@ class HorarioGenetico:
         self.generaciones = generaciones
         self.mutacion = mutacion
         self.materias = list(materias_dict.keys())
+        self.nrc_global_usados = set()
 
+    # crear elementos
     def crear_individuo(self):
         individuo = []
+        usados_local = set()
         for materia in self.materias:
-            opcion = random.choice(self.materias_dict[materia])
-            individuo.append(opcion)
+            opciones = self.materias_dict[materia][:]
+            random.shuffle(opciones)
+            opciones.sort(
+                key=lambda x:
+                (
+                    str(x[0]) in self.nrc_global_usados,
+                    str(x[0] in usados_local)
+                )
+            )
+            elegido = opciones[0]
+            individuo.append(elegido)
+            usados_local.add(str(elegido[0]))
         return individuo
 
     def crear_poblacion(self):
@@ -22,7 +35,7 @@ class HorarioGenetico:
             self.crear_individuo()
             for _ in range(self.poblacion)
         ]
-
+    # reglas y restriccion del codigo 
     def contar_choques(self,individuo):
         choques = 0
         for i in range(len(individuo)):
@@ -32,7 +45,16 @@ class HorarioGenetico:
                 if (self.ventana.mismo_dia(dias1,dias2)) and self.ventana.hay_traslape(hora1,hora2):
                     choques += 1
         return choques
-
+    def contiene_todas_las_materias(self, individuo):
+        materias_horario = {
+            str(m[2].upper())
+            for m in individuo
+        }
+        materias_requeridas = {
+            str(m).upper()
+            for m in self.materias
+        }
+        return materias_horario ==materias_requeridas
     def premio_dias(self,individuo):
         dias_usados = set()
 
@@ -71,16 +93,59 @@ class HorarioGenetico:
             return 0
         return (ultima_hora - 1300) // 10
 
+    def similitud_nrc(self, horario, horarios_previos):
+        penalizacion = 0
+        nrc_actual = {
+            str(m[0])
+            for m in horario
+        }
+        for previo in horarios_previos:
+            nrc_previo = {
+                str(m[0])
+                for m in previo
+            }
+            repetidos = len(nrc_actual.intersection(nrc_previo))
+            penalizacion += repetidos
+        return penalizacion
+
     def fitness(self,individuo):
         choques = (self.contar_choques(individuo))
+        if not self.contiene_todas_las_materias(individuo):
+            return -999999
+        choques = self.contar_choques(individuo)
         if choques > 0:
             return -999999
         score = 10000
-        score += (self.premio_dias(individuo))
-        score -=(self.calcular_huecos(individuo))
-        score -= (self.penalizar_tarde(individuo))
+        score += self.premio_dias(individuo)
+        score -= self.calcular_huecos(individuo)
+        score -= self.penalizar_tarde(individuo)
         return score
 
+    def firma_horarios(self, horario):
+        firma = []
+        for materia in horario:
+            dias, hora = self.ventana.limpiar_hora_dia(materia[7])
+            firma. append(
+                (
+                    materia[2],
+                    dias,
+                    hora
+                )
+            )
+        return tuple(sorted(firma))
+    
+    def diferencia_nrc(self, horario1, horario2):
+        nrc1 = {
+            str(m[0])
+            for m in horario1
+        }
+        nrc2 = {
+            str(m[0])
+            for m in horario2
+        }
+        return len(nrc1.symmetric_difference(nrc2))
+
+    # ciclo del algoritmo genetico 
     def seleccionar(self,poblacion):
         poblacion.sort(key=self.fitness,reverse= True) # aqui hubo error NameError: name 'poblacion' is not defined
         cantidad = max(2,self.poblacion // 5)
@@ -101,39 +166,61 @@ class HorarioGenetico:
         return individuo
 
     def ejecutar(self):
-        poblacion = (self.crear_poblacion())
+        poblacion = self.crear_poblacion()
         for generacion in range(self.generaciones):
-            seleccionados = (self.seleccionar(poblacion))
-            if generacion % 20 == 0:
-                mejor = max(poblacion,key=self.fitness)
-                print(f"Generacion:{generacion}")
-                print(f"Fitness: " f"{self.fitness(mejor)}")
+            seleccionados = self.seleccionar(poblacion)
             nueva = []
             while len(nueva) < self.poblacion:
-                padre1, padre2 = (random.sample(seleccionados, 2))
-                hijo = (self.cruce(padre1,padre2))
-                if (random.random() < self.mutacion):
-                    hijo = (self.mutar(hijo))
+                padre1, padre2 = random.sample(seleccionados,2)
+                hijo = self.cruce(padre1,padre2)
+                if random.random() < self.mutacion:
+                    hijo = self.mutar(hijo)
                 nueva.append(hijo)
             poblacion = nueva
-        poblacion.sort(key=self.fitness, reverse=True)
+        poblacion.sort(
+            key=self.fitness,
+            reverse=True
+        )
         mejores = []
-        usados = set()
+        firma_horarios = set()
+        self.nrc_global_usados.clear()
+        MAX_HORARIOS = 7
         for horario in poblacion:
-            firma = tuple(
-                str(
-                    materia[0]
-                    )
-                for materia in horario
-            )
-            if firma not in usados:
-                usados.add(firma)
-                mejores.append(
-                    sorted(
-                        horario,
-                        key=self.ventana.obtener_inicio
-                    )
+            if not self.contiene_todas_las_materias(horario):
+                continue
+            if self.fitness(horario) < 0:
+                continue
+            firma = self.firma_horarios(horario)
+            if firma in firma_horarios:
+                continue
+            es_diferente = True
+            for previo in mejores:
+                if self.diferencia_nrc(horario,previo) < 2:
+                    es_diferente = False
+                    break
+            if not es_diferente:
+                continue
+            firma_horarios.add(firma)
+            mejores.append(
+                sorted(
+                    horario,
+                    key=self.ventana.obtener_inicio
                 )
-            if len(mejores) >= 6:
+            )
+            for materia in horario:
+                self.nrc_global_usados.add(str(materia[0]))
+            if len(mejores) >= MAX_HORARIOS:
                 break
-        return mejores
+        resultado_final = []
+        for horario in mejores:
+            firma_actual = self.firma_horarios(horario)
+            duplicado = False
+            for previo in resultado_final:
+                if firma_actual == self.firma_horarios(previo):
+                    duplicado = True
+                    break
+            if not duplicado:
+                resultado_final.append(horario)
+
+        return resultado_final
+            

@@ -10,6 +10,9 @@ import re
 from datetime import datetime
 import random
 from itertools import product
+import csv
+import os 
+from openpyxl import Workbook
 
 
 # modificar ui en caso de self en caso de no server y viceversa
@@ -64,6 +67,8 @@ class MainWindow(QMainWindow):
         self.ui.signal_carga_csv.clicked.connect(self.cargar_csv)
         self.ui.signal_choque_materias.clicked.connect(self.choque_materias)
         self.ui.signal_crear_horario.clicked.connect(self.crear_horario)
+        self.ui.bt_descargar_csv.clicked.connect(self.descargar_horarios_csv)
+        self.horarios_generados = []
         
 
                                                #coneccion botones del menu/
@@ -266,22 +271,95 @@ class MainWindow(QMainWindow):
                 self.ui.signal_carga_csv.setText(f"Error: {str(e) [:50]}")
 
   # #################### elementos de choque de materias  
-    def limpiar_hora_dia(self, texto): # este ya estaba asi
+    '''
+    def extraer_bloques_horarios(self, texto):
         texto = str(texto).upper()
-        ####limpiar hora###
+        bloques = []
+        patron = re.compile(
+            r'(\d{2})\s+'
+            r'(\d{4}-\d{4})\s+'
+            r'([LMIJVSD\.\s]+?)\s+'
+            r'([A-Z0-9]+)\s+'
+        )
+        for m in patron.finditer(texto):
+            hora = m.group(2)
+            dias = (
+                m.group(3)
+                .replace(".", "")
+                .replace(" ","")
+                )
+            tipo = m.group(4)
+            bloques.append({
+                "hora": hora,
+                "dias": dias,
+                "tipo": tipo
+            })
+        return bloques
+        '''
+        
+    def limpiar_hora_dia(self, texto): # este ya estaba asi
+        # regular y mas funcional pero no detecta desv
+        #######################################################################
+        texto = str(texto).upper()
+        ####limpiar hora### 
         hora_match = re.search(r'\d{4}-\d{4}',texto)
         hora = hora_match.group() if hora_match else ""
         ###limpiar dia###
         dias_match = re.search(r'[A-Z]+(?:-[A-Z]+)?',texto)
         dias = dias_match.group() if dias_match else ""
         return dias,hora
+        ######################################################################
+        # alternativa que capta el desv
+        #######################################################################
+        '''
+        texto = str(texto).upper()
+        #divide el campo en bloques
+        bloques = re.split(r'(?=\d{2}\s)',texto)
+        #busca que no tenga desv
+        for bloque in bloques:
+            if "DESV" in bloque:
+                continue      
+            hora_match = re.search(r'\d{4}-\d{4}', bloque)
+            dias_match = re.search(r'[LMIJVSD]+', bloque)
 
-        '''texto = str(texto).upper()
+            if hora_match and dias_match:
+                return dias_match.group(), hora_match.group()
+
+        #si no hay desv usar comportamiento anterior
+        hora_match = re.search(r'\d{4}-\d{4}',texto)
+        hora = hora_match.group() if hora_match else ""
+
+        dias_match = re.search(r'[LMIJVSD]+', texto)
+        dias = dias_match.group() if dias_match else ""
+        return dias,hora
+
+        ##############################################################################
+            
+      
+        
+        '''
+        #estos no funcionan o quedaron desactualizado
+        '''
+        bloques = self.extraer_bloques_horarios(texto)
+        #busca el bloque principal
+        for bloque in bloques:
+            if not bloque["tipo"].startswith("DESV"):
+                return(
+                    bloque["dias"],
+                    bloque["hora"]
+                )
+        return "", ""
+                '''
+
+        '''
+        texto = str(texto).upper()
         patron_hora = re.search(r'\d{4}-\d{4}', texto)
         patron_dias = re.search(r'[LMIWJVSD\.\-]+', texto)
         hora = patron_hora.group() if patron_hora else ""
         dias = patron_dias.group() if patron_dias else ""
-        return dias, hora'''
+        return dias, hora
+        '''
+        
 
     def mismo_dia(self, dia1, dia2):
         dia1 = str(dia1)
@@ -409,8 +487,14 @@ class MainWindow(QMainWindow):
         return [mapa[d] for d in dia if d in mapa]
     
     def obtener_fila_hora(self, hora, tabla):
+        #borara una vez se confirme sirve para confirmar lineas
+        print("\nBuscand0:", hora)
         for fila in range(tabla.rowCount()):
             item = tabla.verticalHeaderItem(fila)
+            #borrar este una vez se confirme
+            if item:
+                print("fila", fila, "=", item.text())
+            #################################
             if item and hora in item.text():
                 return fila
         return None
@@ -460,7 +544,8 @@ class MainWindow(QMainWindow):
         ]
 
         materias_usuario = [m for m in materias_usuario if m]
-        if len(materias_usuario) < 4:
+        #nota para mi esta linea solo determina el limite minimo a ingresar
+        if len(materias_usuario) < 5:
             self.ui.signal_crear_horario.setText("ingresa minimo 4 materias")
             return
         ciclo_usurio = self.ui.linea_ciclo.text().replace(" ","")
@@ -487,10 +572,19 @@ class MainWindow(QMainWindow):
                 
         #elimina vacios
         materias_dict = {k: v for k,v in materias_dict.items() if v}
+        #nota para mi esta linea solo detetermina cuanros se veran en la tabla 
 
-        if len(materias_dict) <= 5 and len(materias_dict) >= 7:
-            self.ui.signal_crear_horario.setText("faltan materias en bd")
+        #if len(materias_dict) < 5 and len(materias_dict) >= 7:
+        #    self.ui.signal_crear_horario.setText("faltan materias en bd")
+        #    return
+        faltantes = []
+        for materia in materias_usuario:
+            if materia not in materias_dict:
+                faltantes.append(materia)
+        if faltantes:
+            self.ui.signal_crear_horario.setText(" faltan en la bd: "+",".join(faltantes))
             return
+
 
         #genrar combinaciones
         MAX_HORARIOS = 6
@@ -523,6 +617,7 @@ class MainWindow(QMainWindow):
             mutacion=0.15
         )
         horarios_validos = gen.ejecutar()
+        self.horarios_generados = horarios_validos
         #mostrar tablas
         tablas = [
             self.ui.horario1,
@@ -542,11 +637,23 @@ class MainWindow(QMainWindow):
             for materia in horario:
                 nrc = str(materia[0]).strip()
                 nombre = str(materia[2]).strip()
+                print(
+                    "NRC:", materia[0],
+                    "Materia:", materia[2],
+                    "RAW:", repr(materia[7])
+                )
 
                 texto = f"{nrc}-{nombre}"
                 dias, hora = self.limpiar_hora_dia(materia[7])
-
+                
                 fila = self.obtener_fila_hora(hora, tabla)
+                # print para confirmar porque no se muestra las materias en la tabla
+                print(
+                    nombre,
+                    hora,
+                    "-> fila: ",
+                    fila
+                )
                 columnas = self.obtener_columna_dia(dias)
 
                 if fila is not None:
@@ -555,8 +662,51 @@ class MainWindow(QMainWindow):
                         # para ver comple
                         item.setToolTip(texto)
                         tabla.setItem(fila,col,item)
-                        
 
+    def descargar_horarios_csv(self):
+        if not hasattr(self, "horarios_generados") or len(self.horarios_generados) == 0:
+            self.ui.bt_descargar_csv.setText("Aun no generas un horario")
+            return
+        archivo, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar horarios",
+            "Horarios.xlsx",
+            "Archivos de excel (*.xlsx)"
+        )
+        if not archivo:
+            return
+        if not archivo.endswith(".xlsx"):
+            archivo += ".xlsx"
+        wb = Workbook()
+        wb.remove(wb.active)
+        encabezados = [
+            "NRC",
+            "Clave",
+            "Seccion",
+            "CR",
+            "Cupo",
+            "Disponibles",
+            "Horario",
+            "Profesor"
+        ]
+        for indice, horario in enumerate(self.horarios_generados, start=1):
+            ws = wb.create_sheet(title=f"Horario {indice}")
+            ws.append(encabezados)
+            for materia in horario:
+                ws.append(list(materia))
+            #ajusztar el anchi
+            for columna in ws.columns:
+                longitud = 0
+                letra = columna[0].column_letter
+                for celda in columna:
+                    try:
+                        longitud = max(longitud, len(str(celda.value)))
+                    except:
+                        pass
+                ws.column_dimensions[letra].width = longitud + 3
+        wb.save(archivo)
+        self.ui.signal_carga_csv.setText("Horarios exportados")
+        
 
 
 

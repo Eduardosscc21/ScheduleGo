@@ -40,8 +40,10 @@ class HorarioGenetico:
         choques = 0
         for i in range(len(individuo)):
             dias1, hora1 = (self.ventana.limpiar_hora_dia(individuo[i][7]))
+            
             for j in range(i + 1, len(individuo)):
                 dias2, hora2 = (self.ventana.limpiar_hora_dia(individuo[j][7]))
+                
                 if (self.ventana.mismo_dia(dias1,dias2)) and self.ventana.hay_traslape(hora1,hora2):
                     choques += 1
         return choques
@@ -68,6 +70,7 @@ class HorarioGenetico:
         horarios_por_dia = {}
         for materia in individuo:
             dias, hora = (self.ventana.limpiar_hora_dia(materia[7]))
+            
             inicio = int(hora.split("-")[0])
             for d in dias:
                 horarios_por_dia.setdefault(d,[]).append(inicio)
@@ -85,6 +88,7 @@ class HorarioGenetico:
         for materia in individuo:
             try:
                 _, hora = (self.ventana.limpiar_hora_dia(materia[7]))
+            
                 fin = int(hora.split("-")[1])
                 ultima_hora = max(ultima_hora, fin)
             except Exception:
@@ -152,19 +156,54 @@ class HorarioGenetico:
         return poblacion[:cantidad]
 
     def cruce(self,padre1,padre2):
+        #funcion orignal
         if len(self.materias) < 2:
             return padre1.copy()
         punto = random.randint(1,len(self.materias) -1)
         return padre1[:punto] + padre2[punto:]
+        #funcion alternatuva
+        '''
+        hijo = []
+        usados = set()
+        for materia in self.materias:
+            opcion1 = next(
+                (m for m in padre1 if str(m[2]).upper() == materia),
+                None
+            )
+            opcion2 = next(
+                (m for m in padre2 if str(m[2]).upper() == materia),
+                None
+            )
+            opciones = [o for o in (opcion1,opcion2) if o is not None]
+            if not opciones:
+                continue
+            elegido = random.choice(opciones)
+            if str(elegido[2]).upper() not in usados:
+                hijo.append(elegido)
+                usados.add(str(elegido[2]).upper())
+        return hijo
+        '''
+        
+
+                
 
     def mutar(self,individuo):
+        #funcion original
         if not individuo:
             return individuo
         posicion = random.randint(0, len(individuo) -1)
         materia = (self.materias[posicion])
         individuo[posicion] = (random.choice(self.materias_dict[materia]))
         return individuo
-
+        #funcion alternativa
+        '''
+        if not individuo:
+            return individuo
+        posicion = random.randint(0, len(individuo) -1)
+        nombre = str(individuo[posicion][2]).upper()
+        individuo[posicion] = (random.choice(self.materias_dict[nombre]))
+        return individuo
+        '''
     def ejecutar(self):
         poblacion = self.crear_poblacion()
         for generacion in range(self.generaciones):
@@ -184,8 +223,13 @@ class HorarioGenetico:
         mejores = []
         firma_horarios = set()
         self.nrc_global_usados.clear()
-        MAX_HORARIOS = 7
+        MAX_HORARIOS = 6
         for horario in poblacion:
+            #print  temporal para confirmar
+            #print(
+            #    len(horario),
+            #    [m[2] for m in horario]
+            #)
             if not self.contiene_todas_las_materias(horario):
                 continue
             if self.fitness(horario) < 0:

@@ -299,6 +299,7 @@ class MainWindow(QMainWindow):
         
     def limpiar_hora_dia(self, texto): # este ya estaba asi
         # regular y mas funcional pero no detecta desv
+        #
         #######################################################################
         texto = str(texto).upper()
         ####limpiar hora### 
@@ -309,7 +310,8 @@ class MainWindow(QMainWindow):
         dias = dias_match.group() if dias_match else ""
         return dias,hora
         ######################################################################
-        # alternativa que capta el desv
+        # alternativa que capta el desvc
+        # esta version se hace para que considre que solo hay una materia o una materia csv
         #######################################################################
         '''
         texto = str(texto).upper()

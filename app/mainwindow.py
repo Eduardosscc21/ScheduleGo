@@ -2,8 +2,8 @@ from PySide6.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QSizeG
 from PySide6.QtCore import Slot, QPropertyAnimation,QEasingCurve,Qt
 from PySide6 import QtCore, QtWidgets
 from mainwindow_ui import Ui_MainWindow
-from conexionsql_ventanacargar import Comunicacion
-from cre_horarios import HorarioGenetico
+#from conexionsql_ventanacargar import Comunicacion
+#from cre_horarios import HorarioGenetico
 #from PySide6.QtUiTools import QUiLoader
 import sys
 import re 
@@ -13,7 +13,7 @@ from itertools import product
 import csv
 import os 
 from openpyxl import Workbook
-
+from api_client import obtener_materias, buscar_materia, actualizar_materia, eliminar_materia, cargar_csv, buscar_choques, crear_horarios
 
 # modificar ui en caso de self en caso de no server y viceversa
 class MainWindow(QMainWindow):
@@ -23,11 +23,10 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()   ### loadUi(mainwindow.ui,self)
         self.ui.setupUi(self)
         #ui.pushButton.clicked.connect(self.clci)
-        
         ###################### Movilidad de la pantalla ######################
         self.ui.pushButton_menu.clicked.connect(self.mover_menu)
         # comunicacion con la base de datos
-        self.base_datos = Comunicacion()
+        #self.base_datos = Comunicacion()
         #self.cargar_csv = Boton_cargar()
         
 
@@ -119,7 +118,7 @@ class MainWindow(QMainWindow):
         else:
             self.showNormal()
             #self.pushButton_restaurar.hide()
-            self.pushButton_ampliar.show()
+            #self.pushButton_ampliar.show()
     
     # metodo para mover menu lateral
     def mover_menu(self):
@@ -141,62 +140,75 @@ class MainWindow(QMainWindow):
     @Slot()
     #mostrar materias
     def mostrar_materias(self): # modificar ui por self en caso de que de error
-        datos = self.base_datos.mostrar_materias()
-        self.ui.Tabla_materias.setRowCount(len(datos))
-
-        for fila, row in enumerate(datos):
-            for columna in range(len(row)):
-                self.ui.Tabla_materias.setItem(
-                    fila,
-                    columna,
-                    QtWidgets.QTableWidgetItem(str(row[columna]))
+        respuesta = obtener_materias()
+        if not respuesta.get("success"):
+            QMessageBox.warning(
+                self,
+                "Error",
+                respuesta.get(
+                    "mensaje",
+                    "No fue posible obtener materias"
                 )
+            )
+            return
+        datos = respuesta["materias"]
+        self.ui.Tabla_materias.setRowCount(len(datos))
+        for fila, materia in enumerate(datos):
+            self.ui.Tabla_materias.setItem(
+                fila, 0,
+                QtWidgets.QTableWidgetItem(str(materia["nrc"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 1,
+                QtWidgets.QTableWidgetItem(str(materia["clave"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 2,
+                QtWidgets.QTableWidgetItem(str(materia["materia"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 3,
+                QtWidgets.QTableWidgetItem(str(materia["sec"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 4,
+                QtWidgets.QTableWidgetItem(str(materia["cr"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 5,
+                QtWidgets.QTableWidgetItem(str(materia["cup"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 6,
+                QtWidgets.QTableWidgetItem(str(materia["dis"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 7,
+                QtWidgets.QTableWidgetItem(str(materia["hora_dia"]))
+            )
+            self.ui.Tabla_materias.setItem(
+                fila, 8,
+                QtWidgets.QTableWidgetItem(str(materia["profesor"]))
+            )
         
-    
-    # registrar materias
-    @Slot()  # cambio de nrc = self.reg_nrc.text().upper() a nrc = self.ui.reg_nrc.text().upper()
-    def registrar_materias(self):
-        nrc = self.ui.reg_nrc.text().upper()
-        clave = self.ui.reg_clave.text().upper()
-        materia = self.ui.reg_materia.text().upper()
-        sec = self.ui.reg_sec.text().upper()
-        cr = self.ui.reg_cr.text().upper()
-        cup = self.ui.reg_cup.text().upper()
-        dis = self.ui.reg_dis.text().upper()
-        hora_dia = self.ui.reg_ses.text().upper()
-        profesor = self.ui.reg_profesor.text().upper()
-
-        if nrc != '' and clave !='' and materia !='' and sec !='' and cr !='' and cup !='' and dis !='' and hora_dia !='' and profesor !='':       
-            self.base_datos.insertar_materia(nrc, clave, materia, sec, cr, cup, dis, hora_dia, profesor)
-            self.ui.signal_registrar.setText('Materias registradas')
-            self.ui.reg_nrc.clear()
-            self.ui.reg_clave.clear()
-            self.ui.reg_materia.clear()
-            self.ui.reg_sec.clear()
-            self.ui.reg_cr.clear()
-            self.ui.reg_cup.clear()
-            self.ui.reg_dis.clear()
-            self.ui.reg_ses.clear()
-            self.ui.reg_profesor.clear()
-        else:
-            self.ui.signal_registrar.setText("Llenar todos los campos")
    
     @Slot()
     def buscar_actualiza(self):
         nrc = self.ui.act_buscar.text().upper()
-        datos = self.base_datos.buscar_materia(nrc)
-        if len(datos) != 0:
+        respuesta = buscar_materia(nrc)
+        if respuesta.get("success"):
             self.nrc_actual = nrc
+            materia = respuesta["materia"]
 
-            self.ui.act_nrc_2.setText(str(datos[0][0]))
-            self.ui.act_clave_2.setText(str(datos[0][1]))
-            self.ui.act_materia_2.setText(str(datos[0][2]))
-            self.ui.act_sec_2.setText(str(datos[0][3]))
-            self.ui.act_cr_2.setText(str(datos[0][4]))
-            self.ui.act_cup_2.setText(str(datos[0][5]))
-            self.ui.act_dis_2.setText(str(datos[0][6]))
-            self.ui.act_hora.setText(str(datos[0][7]))
-            self.ui.act_profesor_2.setText(str(datos[0][8]))
+            self.ui.act_nrc_2.setText(str(materia["nrc"]))
+            self.ui.act_clave_2.setText(str(materia["clave"]))
+            self.ui.act_materia_2.setText(str(materia["sec"]))
+            self.ui.act_sec_2.setText(str(materia["sec"]))
+            self.ui.act_cr_2.setText(str(materia["cr"]))
+            self.ui.act_cup_2.setText(str(materia["cup"]))
+            self.ui.act_dis_2.setText(str(materia["dis"]))
+            self.ui.act_hora.setText(str(materia["hora_dia"]))
+            self.ui.act_profesor_2.setText(str(materia["profesor"]))
 
             self.ui.signal_actualizar.setText("Encontrado")
         else:
@@ -205,260 +217,204 @@ class MainWindow(QMainWindow):
             
     @Slot()
     def modificar_materias(self):
-        if hasattr(self, "nrc_actual"):
-            nrc = self.ui.act_nrc_2.text().upper()
-            clave = self.ui.act_clave_2.text().upper()
-            materia = self.ui.act_materia_2.text().upper()
-            sec = self.ui.act_sec_2.text().upper()
-            cr = self.ui.act_cr_2.text().upper()
-            cup = self.ui.act_cup_2.text().upper()
-            dis = self.ui.act_dis_2.text().upper()
-            hora_dia = self.ui.act_hora.text().upper()
-            profesor = self.ui.act_profesor_2.text().upper()
+        if not hasattr(self, "nrc_actual"):
+            self.ui.signal_actualizar.setText("Busque una materia")
 
-            act = self.base_datos.actualiza_materia(nrc, clave, materia, sec, cr, cup, dis, hora_dia, profesor)
-            if  act == 0:
-                self.ui.signal_actualizar.setText("ACTUALIZADO")
-            else:
-                self.ui.signal_actualizar.setText("INCORRECTO")
+        nrc = self.ui.act_nrc_2.text().strip().upper()
+        clave = self.ui.act_clave_2.text().strip().upper()
+        materia = self.ui.act_materia_2.text().strip().upper()
+        sec = self.ui.act_sec_2.text().strip().upper()
+
+        cr = int(self.ui.act_cr_2.text().strip().upper())
+        cup = int(self.ui.act_cup_2.text().strip().upper())
+        dis = int(self.ui.act_dis_2.text().strip().upper())
+
+        hora_dia = self.ui.act_hora.text().strip().upper()
+        profesor = self.ui.act_profesor_2.text().strip().upper()
+
+        respuesta = actualizar_materia(
+            nrc,
+            clave,
+            materia,
+            sec,
+            cr,
+            cup,
+            dis,
+            hora_dia,
+            profesor
+        )
+        if respuesta.get("success"):
+            self.ui.signal_actualizar.setText("Actualizado")
+        else:
+            self.ui.signal_actualizar.setText("Incorrecto")
+
+           
     @Slot()
     def buscar_eliminar(self):
-        nrc = self.ui.materia_eliminar.text().upper()
-        datos = self.base_datos.buscar_materia(nrc)
-        self.ui.tabla_borrar.setRowCount(len(datos))
+        nrc = self.ui.materia_eliminar.text().strip().upper()
+        respuesta = buscar_materia(nrc)
+        self.ui.tabla_borrar.setRowCount(0)
 
-        if len(datos) == 0:
-            self.ui.signal_eliminar.setText('No existe')
+        if not respuesta.get("success"):
+            self.ui.signal_eliminar.setText("No existe")
+            return
 
-        self.ui.signal_eliminar.setText('Materia seleccionada')
+        materia = respuesta["materia"]
+        self.ui.tabla_borrar.setRowCount(1)
+        self.ui.tabla_borrar.setItem(
+            0, 0,
+            QtWidgets.QTableWidgetItem(str(materia["nrc"]))
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 1,
+            QtWidgets.QTableWidgetItem(materia["clave"])
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 2,
+            QtWidgets.QTableWidgetItem(materia["materia"])
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 3,
+            QtWidgets.QTableWidgetItem(materia["sec"])
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 4,
+            QtWidgets.QTableWidgetItem(str(materia["cr"]))
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 5,
+            QtWidgets.QTableWidgetItem(str(materia["cup"]))
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 6,
+            QtWidgets.QTableWidgetItem(str(materia["dis"]))
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 7,
+            QtWidgets.QTableWidgetItem(materia["hora_dia"])
+        )
+        self.ui.tabla_borrar.setItem(
+            0, 8,
+            QtWidgets.QTableWidgetItem(materia["profesor"])
+        )
+        self.ui.signal_eliminar.setText("materia seleccionada")
 
-        for fila, row in enumerate(datos):
-            for col in range(len(row)):
-                self.ui.tabla_borrar.setItem(
-                    fila, col, QtWidgets.QTableWidgetItem(str(row[col]))
-                )
+        
+                
     @Slot()
     def eliminar_materias(self):
         fila = self.ui.tabla_borrar.currentRow()
-        if fila >= 0:
-            nrc = self.ui.tabla_borrar.item(fila,0).text()
-            eliminado = self.base_datos.elimina_materia(nrc)
-
-            if eliminado == 1:
-                self.ui.tabla_borrar.removeRow(fila)
-                self.ui.signal_eliminar.setText("Materia eliminada")
-            else:
-                self.ui.signal_eliminar.setText("Selecciona una fila")
+        if fila < 0:
+            self.ui.signal_eliminar.setText("Selecciona una fila")
+            return
+        nrc = self.ui.tabla_borrar.item(fila, 0).text()
+        respuesta = eliminar_materia(nrc)
+        if respuesta.get("success"):
+            self.ui.tabla_borrar.removeRow(fila)
+            self.ui.signal_eliminar.setText("Materia eliminada")
+        else:
+            self.ui.signal_eliminar.setText(
+                respuesta.get(
+                    "mensaje",
+                    "No fue posible eliminar la materia"
+                )
+            )
 
     @Slot()
     def cargar_csv(self):
-        #self.cargar_csv()
-        archivo, _ = QFileDialog.getOpenFileName(
+        archivo, _= QFileDialog.getOpenFileName(
             self,
-            "Seleccionar archivo CSV",
+            "Seleccionar archivo csv",
+            "",
             "Archivo csv (*.csv)"
         )
+
         if archivo:
             try:
-
-                 total = self.base_datos.cargar_csv_bd(archivo)
-                 if total > 0:
-                      self.ui.signal_carga_csv.setText(f"{total} registros cargados")
-                      self.mostrar_materias()
-                 else:
-                    self.ui.signal_carga_csv.setText("Error al cargar")
+                respuesta = cargar_csv(archivo)
+                if respuesta.get("success"):
+                    total = respuesta.get("total", 0)
+                    self.ui.signal_carga_csv.setText(f"{total} registros cargados")
+                    self.mostrar_materias()
+                else:
+                    self.ui.signal_carga_csv.setText(
+                        respuesta.get(
+                            "mensaje",
+                            "Error al cargar"
+                        )
+                    )
             except Exception as e:
-                self.ui.signal_carga_csv.setText(f"Error: {str(e) [:50]}")
+                self.ui.signal_carga_csv.setText(f"Error: {str(e)[:50]}")
 
   # #################### elementos de choque de materias  
-    '''
-    def extraer_bloques_horarios(self, texto):
-        texto = str(texto).upper()
-        bloques = []
-        patron = re.compile(
-            r'(\d{2})\s+'
-            r'(\d{4}-\d{4})\s+'
-            r'([LMIJVSD\.\s]+?)\s+'
-            r'([A-Z0-9]+)\s+'
-        )
-        for m in patron.finditer(texto):
-            hora = m.group(2)
-            dias = (
-                m.group(3)
-                .replace(".", "")
-                .replace(" ","")
-                )
-            tipo = m.group(4)
-            bloques.append({
-                "hora": hora,
-                "dias": dias,
-                "tipo": tipo
-            })
-        return bloques
-        '''
-        
-    def limpiar_hora_dia(self, texto): # este ya estaba asi
-        # regular y mas funcional pero no detecta desv
-        #
-        #######################################################################
-        texto = str(texto).upper()
-        ####limpiar hora### 
-        hora_match = re.search(r'\d{4}-\d{4}',texto)
-        hora = hora_match.group() if hora_match else ""
-        ###limpiar dia###
-        dias_match = re.search(r'[A-Z]+(?:-[A-Z]+)?',texto)
-        dias = dias_match.group() if dias_match else ""
-        return dias,hora
-        ######################################################################
-        # alternativa que capta el desvc
-        # esta version se hace para que considre que solo hay una materia o una materia csv
-        #######################################################################
-        '''
-        texto = str(texto).upper()
-        #divide el campo en bloques
-        bloques = re.split(r'(?=\d{2}\s)',texto)
-        #busca que no tenga desv
-        for bloque in bloques:
-            if "DESV" in bloque:
-                continue      
-            hora_match = re.search(r'\d{4}-\d{4}', bloque)
-            dias_match = re.search(r'[LMIJVSD]+', bloque)
-
-            if hora_match and dias_match:
-                return dias_match.group(), hora_match.group()
-
-        #si no hay desv usar comportamiento anterior
-        hora_match = re.search(r'\d{4}-\d{4}',texto)
-        hora = hora_match.group() if hora_match else ""
-
-        dias_match = re.search(r'[LMIJVSD]+', texto)
-        dias = dias_match.group() if dias_match else ""
-        return dias,hora
-
-        ##############################################################################
-            
-      
-        
-        '''
-        #estos no funcionan o quedaron desactualizado
-        '''
-        bloques = self.extraer_bloques_horarios(texto)
-        #busca el bloque principal
-        for bloque in bloques:
-            if not bloque["tipo"].startswith("DESV"):
-                return(
-                    bloque["dias"],
-                    bloque["hora"]
-                )
-        return "", ""
-                '''
-
-        '''
-        texto = str(texto).upper()
-        patron_hora = re.search(r'\d{4}-\d{4}', texto)
-        patron_dias = re.search(r'[LMIWJVSD\.\-]+', texto)
-        hora = patron_hora.group() if patron_hora else ""
-        dias = patron_dias.group() if patron_dias else ""
-        return dias, hora
-        '''
-        
-
-    def mismo_dia(self, dia1, dia2):
-        dia1 = str(dia1)
-        dia2 = str(dia2)
-        for d in dia1:
-            if d in dia2:
-                return True
-        return False
-        '''longitud = min(len(dia1), len(dia2)) desactivado 
-        for i in range(longitud):
-            if dia1[i] != ',' and dia2[i] != ',':
-                return True
-        return False'''
-
-    def hay_traslape(self, hora1, hora2):
-        try:
-            inicio1, fin1 = map(int, hora1.split('-'))
-            inicio2, fin2 = map(int, hora2.split('-'))
-            return inicio1 < fin2 and inicio2 < fin1
-        except:
-            return False
-
-
+    
     @Slot()
     def choque_materias(self):
         nrc = self.ui.materia_choque.text().upper().strip()
         ciclo_buscado = self.ui.materia_choque_2.text().replace(" ", "")
-        materia_base = self.base_datos.buscar_materia(nrc)
-        if len(materia_base) == 0:
-            self.ui.signal_choque_materias-setText("NRC no encontrado")
-            return
-        
-        materia_base = materia_base[0]
-        dias_base, hora_base = self.limpiar_hora_dia(materia_base[7])
-        #obtner ciclo base
-        ciclo_base = self.extraer_ciclo(materia_base[7])
-        # si el usuario lo hixo manual
-        if ciclo_buscado != "":
-            ciclo_base = ciclo_buscado
-        
-        # obtner materias
-        todas = self.base_datos.obtener_datos()
-        coincidencias = []
 
-        for materia in todas:
-            try:
-                #evitar compararse consigo mismo
-                if str(materia[0]).upper().strip() == nrc:
-                    continue
-                # limpiar hora actual
-                dias_actual, hora_actual = self.limpiar_hora_dia(materia[7])
-                #obtner ciclo actual
-                ciclo_actual = self.extraer_ciclo(materia[7])
-                # validar ciclo
-                if ciclo_base != "":
-                    if ciclo_actual != ciclo_base:
-                        continue
-                #validar dias
-                if not self.mismo_dia(dias_base, dias_actual):
-                    continue
-                #validar traslape
-                if not self.hay_traslape(hora_base, hora_actual):
-                    continue
-                coincidencias.append(materia)
-            except Exception as e:
-                print("Error en materia:", e)
-        # resultados
+        resultado = buscar_choques(nrc, ciclo_buscado)
+
+        if not resultado.get("success"):
+            self.ui.tabla_materias_chocando.clearContents()
+            self.ui.tabla_materias_chocando.setRowCount(0)
+            self.ui.signal_choque_materias.setText(
+                resultado.get(
+                    "mensaje",
+                    "No fue posible buscar los choques"
+                )
+            )
+            return
+
+        coincidencias = resultado.get(
+            "materias",
+            []
+        )
         self.ui.tabla_materias_chocando.clearContents()
         self.ui.tabla_materias_chocando.setRowCount(len(coincidencias))
-        for fila, row in enumerate(coincidencias):
-            for columna, valor in enumerate(row):
+
+        for fila, materia in enumerate(coincidencias):
+            datos =[
+                materia.get("nrc", ""),
+                materia.get("clave", ""),
+                materia.get("materia", ""),
+                materia.get("sec", ""),
+                materia.get("cr", ""),
+                materia.get("cup", ""),
+                materia.get("dis", ""),
+                materia.get("hora_dia", ""),
+                materia.get("profesor", "")
+            ]
+
+            for columna, valor in enumerate(datos):
                 item = QtWidgets.QTableWidgetItem(str(valor))
-                self.ui.tabla_materias_chocando.setItem(
-                    fila,
-                    columna,
-                    item
-                )
-        self.ui.signal_choque_materias.setText(
-            f"{len(coincidencias)} choque encontrados"
-        )
-
+                self.ui.tabla_materias_chocando.setItem(fila, columna, item)
+        self.ui.signal_choque_materias.setText(f"{len(coincidencias)} choque encontrado")
         
-
-
-
-
 
             
         
 ############### elementos crear horarios 
-    def extraer_ciclo(self, texto):
-        texto = str(texto)
-        patron = re.search(r'\d{2}/\d{2}/\d{2}\s*-\s*\d{2}/\d{2}/\d{2}',texto)
-        if patron:
-            return patron.group().replace(" ","")
-        return ""
-
+    def limpiar_hora_dia(texto): # este ya estaba asi        
+        dias = []
+        horarios = []
+        patrones = re.findall(r'(\d{2})\s+(\d{4}-\d{4})\s+([LMIJVS\. ]+)'),
+        texto
+        mapa_dias = ["L", "M", "I", "J", "V", "S"]
+        for _, hora, dias_raw in patrones:
+            dias_encontrados = [
+                dia for dia, marca in zip(
+                    mapa_dias,
+                    dias_raw.split()
+                )
+                if marca == dia
+            ]
+            dias.extend(dias_encontrados)
+            horarios.append(hora)
+        if not horarios:
+            return "", ""
+        return "".join(dict.fromkeys(dias)), horarios[0]
+        
     def parsear_ciclo(self,ciclo):
         try:
             inicio, fin = ciclo.split('-')
@@ -468,14 +424,7 @@ class MainWindow(QMainWindow):
         except:
             return None, None
 
-    def obtener_inicio(self, materia):
-        try:
-            hora = re.search(r'\d{4}-\d{4}', str(materia[7]))
-            if hora:
-                return int(hora.group().split('-')[0])
-        except:
-            pass
-        return 9999
+    
 
     def obtener_columna_dia(self, dia):
         mapa = {
@@ -501,14 +450,8 @@ class MainWindow(QMainWindow):
                 return fila
         return None
     # intento de correccion del congelamient que se da al ingresar mas e 4
-    def es_valido(self, nuevo, actual):
-        dias1, hora1 = self.limpiar_hora_dia(nuevo[7])
-        for m in actual:
-            dias2, hora2 = self.limpiar_hora_dia(m[7])
-            if self.mismo_dia(dias1, dias2) and self.hay_traslape(hora1, hora2):
-                return False
-        return True
-
+    
+    """"
     # algoritmo backtracking
     def generar_horarios(self, materias_dict, materias_ordenadas, max_horarios):
         horarios_validos = []
@@ -528,142 +471,114 @@ class MainWindow(QMainWindow):
                     horario_actual.pop()
         backtrack(0, [])
         return horarios_validos
+        """
 
 
     @Slot()
     def crear_horario(self):
-        
-        datos = self.base_datos.obtener_datos()
-        ###input de mayerias
+        #obtener materias ingresdas
         materias_usuario = [
-            self.ui.materia1.text().upper(),
-            self.ui.materia2.text().upper(),
-            self.ui.materia3.text().upper(),
-            self.ui.materia4.text().upper(),
-            self.ui.materia5.text().upper(),
-            self.ui.materia6.text().upper(),
-            self.ui.materia7.text().upper()
+            self.ui.materia1.text().strip().upper(),
+            self.ui.materia2.text().strip().upper(),
+            self.ui.materia3.text().strip().upper(),
+            self.ui.materia4.text().strip().upper(),
+            self.ui.materia5.text().strip().upper(),
+            self.ui.materia6.text().strip().upper(),
+            self.ui.materia7.text().strip().upper()
         ]
-
         materias_usuario = [m for m in materias_usuario if m]
-        #nota para mi esta linea solo determina el limite minimo a ingresar
-        if len(materias_usuario) < 5:
-            self.ui.signal_crear_horario.setText("ingresa minimo 4 materias")
+        #validar minimo de materias
+        if len(materias_usuario) < 4:
+            self.ui.signal_crear_horario.setText("Ingresa minimo 4 materias")
             return
-        ciclo_usurio = self.ui.linea_ciclo.text().replace(" ","")
-        #### filtrar datos
-        datos_filtrados = []
-
-        for d in datos:
-            nombre = str(d[2]).upper()
-            if nombre in materias_usuario:
-                if ciclo_usurio:
-                    ciclo_materia = self.extraer_ciclo(d[7])
-                    if ciclo_materia == ciclo_usurio:
-                        datos_filtrados.append(d)
-                else:
-                    datos_filtrados.append(d)
-        #agrupar materia
-        materias_dict = {}
-
-        for d in datos_filtrados:
-            nombre = str(d[2]).upper()
-            if nombre not in materias_dict:
-                materias_dict[nombre] = []
-            materias_dict[nombre].append(d)
-                
-        #elimina vacios
-        materias_dict = {k: v for k,v in materias_dict.items() if v}
-        #nota para mi esta linea solo detetermina cuanros se veran en la tabla 
-
-        #if len(materias_dict) < 5 and len(materias_dict) >= 7:
-        #    self.ui.signal_crear_horario.setText("faltan materias en bd")
-        #    return
-        faltantes = []
-        for materia in materias_usuario:
-            if materia not in materias_dict:
-                faltantes.append(materia)
-        if faltantes:
-            self.ui.signal_crear_horario.setText(" faltan en la bd: "+",".join(faltantes))
+        #obtner ciclo
+        ciclo_usuario = self.ui.linea_ciclo.text().replace(" ", "")
+        #solicitar generacion de la api
+        respuesta = crear_horarios(
+            materias_usuario,
+            ciclo_usuario
+        )
+        #validar respuesta de la api
+        if not respuesta.get("success", False):
+            self.ui.signal_crear_horario.setText(
+                respuesta.get(
+                    "mensaje",
+                    "No fue posible generar los horarios"
+                )
+            )
             return
-
-
-        #genrar combinaciones
-        MAX_HORARIOS = 6
-        materias_ordenadas = sorted(
-            materias_dict.keys(),
-            key=lambda k: len(materias_dict[k])
+        #guardar horarios recibidos
+        horarios_generados = respuesta.get("horarios", [])
+        self.horarios_generados = horarios_generados
+        #mostrar mensaje
+        self.ui.signal_crear_horario.setText(
+            f"Generacion exitosa: {len(horarios_generados)} horarios"
         )
-        for k in materias_ordenadas:
-            materias_dict[k] = sorted(
-                materias_dict[k],
-                key=self.obtener_inicio
-            )[:5]
-        
-        '''horarios_validos = self.generar_horarios(
-            materias_dict,
-            materias_ordenadas,
-            MAX_HORARIOS        
-            )
-        '''
-        for k in materias_dict:
-            materias_dict[k] = sorted(
-                materias_dict[k],
-                key=self.obtener_inicio
-            )
-        gen = HorarioGenetico(
-            materias_dict,
-            self,
-            poblacion=200,
-            generaciones=200,
-            mutacion=0.15
-        )
-        horarios_validos = gen.ejecutar()
-        self.horarios_generados = horarios_validos
-        #mostrar tablas
+        #tablas de la interfaz
         tablas = [
             self.ui.horario1,
             self.ui.horario2,
             self.ui.horario3,
             self.ui.horario4,
             self.ui.horario5,
-            self.ui.horario6
+            self.ui.horario6,
         ]
-        for i, tabla in enumerate(tablas):
+        #limpiar tablas
+        for tabla in tablas:
             tabla.clearContents()
-            # ajuste automatico
             tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-            if i >= len(horarios_validos):
-                continue
-            horario = horarios_validos[i]
+        # mostrar respuestas de la api
+        for indice, horario in enumerate(horarios_generados):
+            if indice >= len(tablas):
+                break
+            tabla = tablas[indice]
             for materia in horario:
-                nrc = str(materia[0]).strip()
-                nombre = str(materia[2]).strip()
-                print(
-                    "NRC:", materia[0],
-                    "Materia:", materia[2],
-                    "RAW:", repr(materia[7])
+                nrc = str(materia.get("nrc","")).strip()
+                nombre = str(materia.get("materia","")).strip()
+                hora_dia = str(materia.get("hora_dia","")).strip()
+                profesor = str(materia.get("profesor","")).strip()
+                texto = (f"{nrc}-{nombre}")
+
+                if not hora_dia:
+                    continue
+                coincidencia_hora = re.search(r'\d{4}-\d{4}', hora_dia)
+                if not coincidencia_hora:
+                    continue
+                hora = coincidencia_hora.group()
+                dias_encontrados = []
+
+                mapa_dias = [
+                    "L",
+                    "M",
+                    "I",
+                    "J",
+                    "V",
+                    "S"
+                ]
+                # buscar las marcas de dia dentro del registro
+                for dia in mapa_dias:
+                    if re.search(rf'\b{dia}\b', hora_dia):
+                        dias_encontrados.append(dia)
+                dias = "".join(dias_encontrados)
+                fila = self.obtener_fila_hora(hora,tabla)
+                columnas = (self.obtener_columna_dia(dias))
+                if fila is None:
+                    continue
+                for columna in columnas:
+                    item = QTableWidgetItem(texto)
+                item.setToolTip(
+                    f"NRC: {nrc}\n"
+                    f"Materia: {nombre}\n"
+                    f"Horario: {hora_dia}\n"
+                    f"Profesor: {profesor}\n"
+                )
+                tabla.setItem(
+                    fila,
+                    columna,
+                    item
                 )
 
-                texto = f"{nrc}-{nombre}"
-                dias, hora = self.limpiar_hora_dia(materia[7])
-                
-                fila = self.obtener_fila_hora(hora, tabla)
-                # print para confirmar porque no se muestra las materias en la tabla
-                print(
-                    nombre,
-                    hora,
-                    "-> fila: ",
-                    fila
-                )
-                columnas = self.obtener_columna_dia(dias)
-
-                if fila is not None:
-                    for col in columnas:
-                        item = QTableWidgetItem(texto)
-                        # para ver comple
-                        item.setToolTip(texto)
-                        tabla.setItem(fila,col,item)
+           
 
     def descargar_horarios_csv(self):
         if not hasattr(self, "horarios_generados") or len(self.horarios_generados) == 0:
@@ -695,7 +610,17 @@ class MainWindow(QMainWindow):
             ws = wb.create_sheet(title=f"Horario {indice}")
             ws.append(encabezados)
             for materia in horario:
-                ws.append(list(materia))
+                ws.append([
+                    materia.get("nrc", ""),
+                    materia.get("clave", ""),
+                    materia.get("sec", ""),
+                    materia.get("cr", ""),
+                    materia.get("cup", ""),
+                    materia.get("dis", ""),
+                    materia.get("hora_dia", ""),
+                    materia.get("profesor", ""),
+                ])
+            
             #ajusztar el anchi
             for columna in ws.columns:
                 longitud = 0

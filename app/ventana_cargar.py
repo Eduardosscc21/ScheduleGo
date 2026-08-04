@@ -1,14 +1,14 @@
-from PySide6.QtWidgets import  QApplication
-from mainwindow import MainWindow
 import sys
-
+sys.path.append(r".")
+from PySide6.QtWidgets import  QApplication
+from main import VentanaPresentacion
 
 #Inicar aplicacion
 app = QApplication(sys.argv)
 # cargar archivos .ui
 
-window = MainWindow()
+window = VentanaPresentacion()
 
 window.show()
 
-exit(app.exec_())
+sys.exit(app.exec())

@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(781, 581)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.centralwidget.setStyleSheet(u"backgroaund:rgb(0, 0, 0)")
+        self.centralwidget.setStyleSheet(u"background:rgb(0, 0, 0)")
         self.gridLayout_9 = QGridLayout(self.centralwidget)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
         self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
@@ -180,7 +180,7 @@ class Ui_MainWindow(object):
         self.frame_paginas = QFrame(self.frame_contenido)
         self.frame_paginas.setObjectName(u"frame_paginas")
         self.frame_paginas.setStyleSheet(u"QFrame{\n"
-"backgroud-color:rgb(61,61,61);\n"
+"background-color:rgb(61,61,61);\n"
 "}\n"
 "\n"
 "QLabel{\n"
@@ -198,14 +198,14 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton{\n"
-"backgroud-color:rgb(61,61,61);\n"
+"background-color:rgb(61,61,61);\n"
 "border-radius:15px;\n"
 "color:rgb(255,255,255);\n"
 "font: 77 10pt\"Arial Black\";\n"
 "}\n"
 "\n"
 "QPushButton:hover{\n"
-"backgroud-color:rgb(0,206,151);\n"
+"background-color:rgb(0,206,151);\n"
 "border-radius:15px;\n"
 "color:rgb(0,0,0);\n"
 "font: 77 10pt\"Arial Black\";\n"

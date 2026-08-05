@@ -14,7 +14,7 @@ import csv
 import os 
 from openpyxl import Workbook
 from api_client import obtener_materias, buscar_materia, actualizar_materia, eliminar_materia, cargar_csv, buscar_choques, crear_horarios
-
+import traceback
 # modificar ui en caso de self en caso de no server y viceversa
 class MainWindow(QMainWindow):
 #Funciones
@@ -30,13 +30,28 @@ class MainWindow(QMainWindow):
         #self.cargar_csv = Boton_cargar()
         
 
-        #ocultamos los botones
-        self.ui.pushButton_ampliar.hide()
+       #ocultamos los botones
+        #self.ui.pushButton_ampliar.hide()
         
         #control barra de titulos
         self.ui.pushButton_minimizar.clicked.connect(self.control_minimizar)
         self.ui.pushButton_ampliar.clicked.connect(self.control_ampliar)
         self.ui.pushButton_cerrar.clicked.connect(self.close)
+        self.ui.pushButton_menu.clicked.connect(self.control_menu)
+        
+        #obtiene la ruta de los iconos
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        DIR_ICONOS = os.path.join(BASE_DIR, "iconos")
+        
+        
+        
+            # CERRAR SESIÓN #
+        #busca en la carpeta raiz
+        directorio_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        if directorio_raiz not in sys.path:
+            sys.path.append(directorio_raiz)
+        
+            
          
         #eliinar barra y titulo - opacidad
         self.setWindowFlag(Qt.FramelessWindowHint)
@@ -68,6 +83,7 @@ class MainWindow(QMainWindow):
         self.ui.signal_crear_horario.clicked.connect(self.crear_horario)
         self.ui.bt_descargar_csv.clicked.connect(self.descargar_horarios_csv)
         self.horarios_generados = []
+        self.ui.pushButton_log_out.clicked.connect(self.cerrar_sesion)
         
 
                                                #coneccion botones del menu/
@@ -80,6 +96,12 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_crear_horarios.clicked.connect(lambda:self.ui.stackedWidget.setCurrentWidget(self.ui.page_crea_horarios))
 
 
+    def cerrar_sesion(self):
+        #se importa el archivo del login para logout
+        from main import VentanaPresentacion
+        self.ventana_login = VentanaPresentacion()
+        self.ventana_login.show()
+        self.close()
     
     def control_minimizar(self):
         self.showMinimized()
@@ -88,13 +110,21 @@ class MainWindow(QMainWindow):
 
     def control_normal(self):
         self.showNormal()
-        #self.pushButton_normal.hide()
-        self.pushButton_ampliar.hide()
+        self.pushButton_normal.hide()
+        #self.pushButton_ampliar.hide()
     
     def control_ampliar(self):
-        self.showMaximized()
-        self.pushButton_ampliar.hide()
-        #self.pushButton_normal.hide()
+        print("EL boton maximizar funciona")
+        if self.isMaximized():
+              self.showNormal()
+        else:
+            self.showMaximized()
+    
+    def control_menu(self):
+        if self.ui.frame_control.isVisible():
+            self.ui.frame_control.hide()
+        else:
+            self.ui.frame_control.show()
     
     #SizeGrip
     def resizeEvent(self,event):
@@ -136,6 +166,7 @@ class MainWindow(QMainWindow):
         self.animacion.setEndValue(extender)
         self.animacion.setEasingCurve(QEasingCurve.InQuart)
         self.animacion.start()
+    
     #########################
     @Slot()
     #mostrar materias
@@ -196,27 +227,28 @@ class MainWindow(QMainWindow):
     def buscar_actualiza(self):
         nrc = self.ui.act_buscar.text().upper()
         respuesta = buscar_materia(nrc)
-        if respuesta.get("success"):
-            self.nrc_actual = nrc
-            materia = respuesta["materia"]
-
-            self.ui.act_nrc_2.setText(str(materia["nrc"]))
-            self.ui.act_clave_2.setText(str(materia["clave"]))
-            self.ui.act_materia_2.setText(str(materia["sec"]))
-            self.ui.act_sec_2.setText(str(materia["sec"]))
-            self.ui.act_cr_2.setText(str(materia["cr"]))
-            self.ui.act_cup_2.setText(str(materia["cup"]))
-            self.ui.act_dis_2.setText(str(materia["dis"]))
-            self.ui.act_hora.setText(str(materia["hora_dia"]))
-            self.ui.act_profesor_2.setText(str(materia["profesor"]))
-
-            self.ui.signal_actualizar.setText("Encontrado")
-        else:
+        if not respuesta.get("success"):
             self.ui.signal_actualizar.setText("No existe")
+            return
+        materia = respuesta["materia"]
+        self.nrc_actual = str(materia["nrc"])
 
+        self.ui.act_nrc_2.setText(str(materia["nrc"]))
+        self.ui.act_clave_2.setText(str(materia["clave"]))
+        self.ui.act_materia_2.setText(str(materia["materia"]))
+        self.ui.act_sec_2.setText(str(materia["sec"]))
+        self.ui.act_cr_2.setText(str(materia["cr"]))
+        self.ui.act_cup_2.setText(str(materia["cup"]))
+        self.ui.act_dis_2.setText(str(materia["dis"]))
+        self.ui.act_hora.setText(str(materia["hora_dia"]))
+        self.ui.act_profesor_2.setText(str(materia["profesor"]))
+
+        self.ui.signal_actualizar.setText("Encontrado")
+        
             
     @Slot()
     def modificar_materias(self):
+        #print("=== ENTRO A modificar_materias ===", id(self))
         if not hasattr(self, "nrc_actual"):
             self.ui.signal_actualizar.setText("Busque una materia")
 
@@ -224,11 +256,22 @@ class MainWindow(QMainWindow):
         clave = self.ui.act_clave_2.text().strip().upper()
         materia = self.ui.act_materia_2.text().strip().upper()
         sec = self.ui.act_sec_2.text().strip().upper()
-
-        cr = int(self.ui.act_cr_2.text().strip().upper())
-        cup = int(self.ui.act_cup_2.text().strip().upper())
-        dis = int(self.ui.act_dis_2.text().strip().upper())
-
+#con int no marca error en la api pero si en el entorno de la app y
+#si no se pone int sale bien en el entorno de la app pero en la de api sale error
+#este error solo afecta a cr,cup y dis
+#el error esta en el buscar_actualizar
+#la posible solucion es que desjar el buscar_actualizar similar a buscar_eliminar pues ese no deja error
+#problema a solucionar despues de la migracion de la api pues esta funciona sin problema el error esta en la aplicacion de escritorio
+# solucion uso de un try excep       
+        
+        try:
+            cr = (int(self.ui.act_cr_2.text().strip().upper())) 
+            cup = (int(self.ui.act_cup_2.text().strip().upper())) 
+            dis = (int(self.ui.act_dis_2.text().strip().upper())) 
+        except ValueError:
+            self.ui.signal_actualizar.setText("complete correctamente la peticion")
+            return # asi ya no devuelve 
+       
         hora_dia = self.ui.act_hora.text().strip().upper()
         profesor = self.ui.act_profesor_2.text().strip().upper()
 
@@ -247,6 +290,7 @@ class MainWindow(QMainWindow):
             self.ui.signal_actualizar.setText("Actualizado")
         else:
             self.ui.signal_actualizar.setText("Incorrecto")
+        
 
            
     @Slot()

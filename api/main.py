@@ -18,6 +18,20 @@ def root():
     return{
         "mensaje de confirmacion": "API GENRADA"
     }
+
+# politicas de seguridad
+@app.middleware("http")
+async def security_headers(request, call_next):
+    response = await call_next(request)
+    #evitar que se incruste un iframe
+    response.headers["X-Frame-Options"] = "DENY"
+    #evitar interpretaciones incorrectas
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    #impide que la aplicacion sea utilizada como frame
+    response.headers["Content-Security-Policy"] = ("frame-ancestors 'none';")
+    return response
+
+#rutas
 app.include_router(login_router)
 app.include_router(registro_router)
 app.include_router(materias_router)

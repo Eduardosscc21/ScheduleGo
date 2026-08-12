@@ -1,6 +1,6 @@
 import requests
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = "https://schedulego.onrender.com"
 
 def autenticar(correo: str, password: str, rol: str) -> dict:
     # sirve ára enviar crednciales a la api  y devolver respuesta

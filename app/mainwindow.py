@@ -12,6 +12,7 @@ import random
 from itertools import product
 import csv
 import os 
+from PySide6.QtGui import QPixmap, QIcon
 from openpyxl import Workbook
 from api_client import obtener_materias, buscar_materia, actualizar_materia, eliminar_materia, cargar_csv, buscar_choques, crear_horarios
 import traceback
@@ -40,8 +41,21 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_menu.clicked.connect(self.control_menu)
         
         #obtiene la ruta de los iconos
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        if getattr(sys, "frozen", False):
+            BASE_DIR = sys._MEIPASS
+        else:
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         DIR_ICONOS = os.path.join(BASE_DIR, "iconos")
+
+        
+        self.ui.pushButton_datos.setIcon(QIcon(os.path.join(DIR_ICONOS, "base_datos.png")))
+        self.ui.bt_cargar.setIcon(QIcon(os.path.join(DIR_ICONOS, "cargarr.png")))
+        self.ui.pushButton_actualizar.setIcon(QIcon(os.path.join(DIR_ICONOS, "actualizar.png")))
+        self.ui.pushButton_eliminar.setIcon(QIcon(os.path.join(DIR_ICONOS, "eliminar.png")))
+        self.ui.bt_choque_materias.setIcon(QIcon(os.path.join(DIR_ICONOS, "choque.png")))
+        self.ui.pushButton_crear_horarios.setIcon(QIcon(os.path.join(DIR_ICONOS, "horarios.png")))
+        self.ui.pushButton_log_out.setIcon(QIcon(os.path.join(DIR_ICONOS, "logout.png")))
+        
         
         
         

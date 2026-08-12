@@ -1,7 +1,52 @@
 import sys
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QStackedWidget, QLineEdit
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QPixmap
+from pathlib import Path
+
+
+if getattr(sys, "frozen", False):
+    DIR_ACTUAL = Path(sys._MEIPASS)
+else:
+    DIR_ACTUAL = Path(__file__).parent
+RUTA_IMAG = DIR_ACTUAL / "iconos" / "logo.png"
+
+
+
+class imagEscalable(QLabel):
+    def __init__(self, RUTA_IMAG, alto_max=220, parent=None):
+        super().__init__(parent)
+        self.pixmap_original = QPixmap(str(RUTA_IMAG))
+        self.alto_max = alto_max
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setStyleSheet("background: transparent;")
+        self.setMinimumHeight(100)
+        self.setMinimumWidth(250)
+        self.actualizar_imagen()
+    
+    def actualizar_imagen(self):
+        if self.pixmap_original.isNull():
+            return
+        ancho = self.width()
+        alto = min(self.height(), self.alto_max)
+        if ancho <= 0:
+            ancho = 250
+        if alto < 40:
+            alto = self.alto_max
+        pixmap_escalado = self.pixmap_original.scaled(
+            ancho,
+            alto,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )
+        self.setPixmap(pixmap_escalado)
+    
+    def resizeEvent(self, event):
+        self.actualizar_imagen()
+        super().resizeEvent(event)
+ 
+   
+   
 
 class Ui_VentanaPresentacion(object):
     def setupUi(self, VentanaPresentacion):
@@ -39,6 +84,9 @@ class Ui_VentanaPresentacion(object):
         # Pagina de inicio
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        self.logo = imagEscalable(RUTA_IMAG, alto_max=220)
+        layout.addWidget(self.logo, alignment=Qt.AlignmentFlag.AlignCenter)
         
         titulo = QLabel("Bienvenid@")
         titulo.setFont(QFont("Arial", 18, QFont.Weight.Bold))
